@@ -4,12 +4,12 @@ import (
 	"io"
 	"log"
 
-	"github.com/omeid/slurp/s"
+	"github.com/omeid/slurp"
 	"github.com/omeid/slurp/tools/glob"
 	"gopkg.in/fsnotify.v1"
 )
 
-func Watch(c *s.C, task func(), globs ...string) io.Closer {
+func Watch(c *slurp.C, task func(), globs ...string) io.Closer {
 
 	files, err := glob.Glob(globs...)
 
