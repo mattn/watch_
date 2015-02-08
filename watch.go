@@ -1,15 +1,16 @@
 package watch
 
 import (
-	"io"
-	"log"
-
 	"github.com/omeid/slurp"
 	"github.com/omeid/slurp/tools/glob"
 	"gopkg.in/fsnotify.v1"
 )
 
-func Watch(c *slurp.C, task func(), globs ...string) io.Closer {
+type Closer interface {
+	Close() error
+}
+
+func Watch(c *slurp.C, task func(), globs ...string) Closer {
 
 	files, err := glob.Glob(globs...)
 
@@ -33,7 +34,7 @@ func Watch(c *slurp.C, task func(), globs ...string) io.Closer {
 			select {
 			case event := <-w.Events:
 				if event.Op&fsnotify.Write == fsnotify.Write {
-					log.Println("modified file:", event.Name)
+					c.Println("modified file:", event.Name)
 					task()
 				}
 			case err := <-w.Errors:
