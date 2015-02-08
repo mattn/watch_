@@ -10,7 +10,7 @@ type Closer interface {
 	Close() error
 }
 
-func Watch(c *slurp.C, task func(), globs ...string) Closer {
+func Watch(c *slurp.C, task func(string), globs ...string) Closer {
 
 	files, err := glob.Glob(globs...)
 
@@ -35,7 +35,7 @@ func Watch(c *slurp.C, task func(), globs ...string) Closer {
 			case event := <-w.Events:
 				if event.Op&fsnotify.Write == fsnotify.Write {
 					c.Println("modified file:", event.Name)
-					task()
+					task(event.Name)
 				}
 			case err := <-w.Errors:
 				c.Println(err)
