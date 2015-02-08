@@ -3,7 +3,7 @@ package watch
 import (
 	"github.com/omeid/slurp"
 	"github.com/omeid/slurp/tools/glob"
-	"gopkg.in/fsnotify.v1"
+	"golang.org/x/exp/fsnotify"
 )
 
 type Closer interface {
@@ -26,18 +26,18 @@ func Watch(c *slurp.C, task func(string), globs ...string) Closer {
 	}
 
 	for matchpair := range files {
-		w.Add(matchpair.Name)
+		w.Watch(matchpair.Name)
 	}
 
 	go func() {
 		for {
 			select {
-			case event := <-w.Events:
-				if event.Op&fsnotify.Write == fsnotify.Write {
+			case event := <-w.Event:
+				if event.IsModify() {
 					c.Println("modified file:", event.Name)
 					task(event.Name)
 				}
-			case err := <-w.Errors:
+			case err := <-w.Error:
 				c.Println(err)
 			}
 		}
