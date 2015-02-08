@@ -34,7 +34,6 @@ func Watch(c *slurp.C, task func(string), globs ...string) Closer {
 			select {
 			case event := <-w.Event:
 				if event.IsModify() {
-					c.Println("modified file:", event.Name)
 					task(event.Name)
 				}
 			case err := <-w.Error:
