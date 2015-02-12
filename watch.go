@@ -33,7 +33,7 @@ func Watch(c *slurp.C, task func(string), globs ...string) Closer {
 		for {
 			select {
 			case event := <-w.Event:
-				if event.IsModify() && !event.IsAttrib(){
+				if event != nil && event.IsModify() && !event.IsAttrib(){
 					task(event.Name)
 				}
 			case err := <-w.Error:
