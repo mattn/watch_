@@ -3,7 +3,7 @@ package watch
 import (
 	"github.com/omeid/slurp"
 	"github.com/omeid/slurp/tools/glob"
-	"golang.org/x/exp/fsnotify"
+	"gopkg.in/fsnotify.v0"
 )
 
 type Closer interface {
@@ -33,7 +33,7 @@ func Watch(c *slurp.C, task func(string), globs ...string) Closer {
 		for {
 			select {
 			case event := <-w.Event:
-				if event != nil && event.IsModify() && !event.IsAttrib(){
+				if event != nil && event.IsModify() && !event.IsAttrib() {
 					task(event.Name)
 				}
 			case err := <-w.Error:
